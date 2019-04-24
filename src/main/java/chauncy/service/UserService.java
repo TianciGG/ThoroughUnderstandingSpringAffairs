@@ -3,6 +3,7 @@ package chauncy.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
@@ -16,6 +17,8 @@ public class UserService {
 	private UserDao userDao;
 	@Autowired
 	private TransactionManager transactionManager;
+	@Autowired
+	private LogService logService;
 	
 	/**
 	 * 
@@ -86,5 +89,16 @@ public class UserService {
 			//固定写法，手动回滚事务
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		}
+	}
+	
+	/**
+	 * Spring事务的传播行为应用
+	 */
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	public void add4(){
+		logService.addLog();
+		userDao.addUser("chauncy---"+System.currentTimeMillis(), 18);
+		int i=1/0;
+		System.out.println("UserService的add方法----执行完毕");
 	}
 }

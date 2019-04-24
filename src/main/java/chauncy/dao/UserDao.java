@@ -21,6 +21,6 @@ public class UserDao {
 	public void addUser(String name,Integer age){
 		String sql="insert into users(name,age) VALUES(?,?);";
 		jdbcTemplate.update(sql,name,age);
-		System.out.println("添加数据成功。。。");
+		System.out.println("addUser--添加数据成功。。。");
 	}
 }
