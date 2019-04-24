@@ -3,6 +3,7 @@ package chauncy.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import chauncy.dao.UserDao;
 import chauncy.transaction.TransactionManager;
@@ -15,21 +16,51 @@ public class UserService {
 	@Autowired
 	private TransactionManager transactionManager;
 	
-	
-	public void add(){
+	/**
+	 * 
+	 * @methodDesc: 功能描述(编程事务)  
+	 * @author: ChauncyWang
+	 * @param:    
+	 * @createTime: 2019年4月24日 下午3:24:39   
+	 * @returnType: void
+	 */
+	public void add1(){
 		TransactionStatus begin = null;
 		try {
 			begin = transactionManager.begin();
 			userDao.addUser("zhangsan-"+System.currentTimeMillis(), 18);
-			System.out.println("UserService的add方法----zhangsan插入成功----执行完毕");
+			System.out.println("UserService的add方法----zhangsan插入成功");
 			//int i=1/0; //会发生运行时异常
 			userDao.addUser("lisi-"+System.currentTimeMillis(), 18);
-			System.out.println("UserService的add方法----zhangsan李四成功----执行完毕");
+			System.out.println("UserService的add方法----zhangsan李四成功");
+			System.out.println("UserService的add方法----执行完毕");
 			transactionManager.commit(begin);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//当发生遗产时，进行事务回滚操作
 			transactionManager.rollback(begin);
+		}
+	}
+	
+	/**
+	 * 
+	 * @methodDesc: 功能描述(声明事务)  
+	 * @author: ChauncyWang
+	 * @param:    
+	 * @createTime: 2019年4月24日 下午3:25:13   
+	 * @returnType: void
+	 */
+	public void add2(){
+		try{
+			userDao.addUser("zhangsan-"+System.currentTimeMillis(), 18);
+			System.out.println("UserService的add方法----zhangsan插入成功");
+			int i=1/0; //会发生运行时异常
+			userDao.addUser("lisi-"+System.currentTimeMillis(), 18);
+			System.out.println("UserService的add方法----zhangsan李四成功");
+			System.out.println("UserService的add方法----执行完毕");
+		}catch(Exception e){
+			//固定写法，手动回滚事务
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		}
 	}
 }

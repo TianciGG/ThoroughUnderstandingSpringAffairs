@@ -32,4 +32,20 @@
 	 <property name="dataSource" ref="dataSource"></property>
 	</bean>
 	
+	<!-- 配置事务增强 -->
+	<tx:advice id="txAdvice" transaction-manager="dataSourceTransactionManager">
+	   <tx:attributes>
+	       <tx:method name="get"  read-only="true" />
+	       <tx:method name="find*" read-only="true" />
+	       <tx:method name="*" read-only="false" />
+	   </tx:attributes>
+	</tx:advice>
+	
+	<!-- Aop配置： 拦截哪些方法(切入点表表达式) + 应用上面的事务增强配置 -->
+    <aop:config>
+        <aop:pointcut expression="execution(* chauncy.service.*.*(..))"
+            id="pt" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pt" />
+    </aop:config>
+	
 </beans>
