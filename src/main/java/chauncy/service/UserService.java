@@ -92,9 +92,9 @@ public class UserService {
 	}
 	
 	/**
-	 * Spring事务的传播行为应用
+	 * Spring事务的传播行为应用,改变注解属性propagation的值来验证不同方式的传播行为
 	 */
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional(propagation=Propagation.REQUIRED)
 	public void add4(){
 		logService.addLog();
 		userDao.addUser("chauncy---"+System.currentTimeMillis(), 18);

@@ -13,7 +13,7 @@ public class LogService {
 	@Autowired
 	private LogDao logDao;
 	
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	@Transactional(propagation=Propagation.NEVER)
 	public void addLog(){
 		logDao.addLog();
 		System.out.println("插入日志成功。。。");
